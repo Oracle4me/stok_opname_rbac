@@ -60,8 +60,8 @@ composer -V
 ### 1. Clone via Git (Direkomendasikan)
 
 ```
-git clone https://github.com/username/nama-project.git
-cd nama-project
+git clone https://github.com/Oracle4me/stok_opname_rbac.git
+cd stok_opname_rbac
 ```
 
 ---
@@ -113,7 +113,7 @@ Project ini sudah menyediakan database siap pakai.
 📁 Lokasi file:
 
 ```
-Database/Migration/database.sql
+app/Database/Migration/database.sql
 ```
 
 ---
