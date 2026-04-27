@@ -1,0 +1,43 @@
+.bg-header_carousel {
+	background-color: #fff4de;
+	background-image: url(https://simpelpol.id/template/metronic/assets/media/svg/humans/custom-8.svg);
+	background-position: right bottom;
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	border-radius: 1rem;
+}
+.accordion-button:not(.collapsed) {
+	background-color: rgba(42, 181, 125, 0.25) !important;
+}
+
+#map {
+	height: 30rem;
+	position: relative;
+	border-radius: 1rem;
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+#tooltipMaps {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 14px;
+    border-radius: 4px;
+    z-index: 1000;
+    opacity: 0; /* Start hidden */
+    transition: opacity 0.3s ease-in-out; /* Smooth fade effect */
+    pointer-events: none; /* Avoid interference with mouse events */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+#tooltipMaps.visible {
+    opacity: 1; /* Fully visible when class is added */
+}
+#tooltipMaps i {
+    font-size: 16px;
+    color: white;
+}

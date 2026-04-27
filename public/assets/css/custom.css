@@ -1,0 +1,30 @@
+:root {
+  --bs-primary: #2ab57d;
+
+  --bs-green-100: #f0f9f8;
+  --bs-green-200: #d1f0e4;
+  --bs-green-300: #a3e4c1;
+  --bs-green-400: #76d8a0;
+  --bs-green-500: #2ab57d;
+  --bs-green-600: #1e9d6b;
+  --bs-green-700: #1a8d5f;
+  --bs-green-800: #14784f;
+  --bs-green-900: #0d5436;
+
+  --bs-red-200: #f9dede;
+}
+
+#sidebar-menu ul li a:hover,
+#sidebar-menu ul li ul.sub-menu li a:hover,
+#sidebar-menu ul li ul.sub-menu li a:hover svg,
+#sidebar-menu ul li a:hover svg {
+  color: var(--bs-primary);
+}
+.mm-active > a,
+.mm-active > a svg {
+  color: var(--bs-primary) !important;
+}
+.vertical-menu,
+.navbar-brand-box {
+  background-color: #f0f9f8;
+}
