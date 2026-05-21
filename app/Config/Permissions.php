@@ -32,6 +32,7 @@ return [
         ['nama' => 'stok_view', 'label' => 'Lihat Stok Opname'],
         ['nama' => 'stok_create', 'label' => 'Buat Stok Opname'],
         ['nama' => 'stok_edit', 'label' => 'Edit Draft Opname'],
+        ['nama' => 'stok_delete_draft', 'label' => 'Hapus Draft Opname'],
         ['nama' => 'stok_draft', 'label' => 'Draft Opname'],
         ['nama' => 'stok_final', 'label' => 'Finalisasi Opname'],
     ],

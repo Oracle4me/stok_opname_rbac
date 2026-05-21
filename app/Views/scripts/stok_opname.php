@@ -58,7 +58,7 @@
             }
         ];
 
-        <?php if (can('stok_edit') || can('stok_final')): ?>
+        <?php if (can('stok_edit') || can('stok_final') || can('stok_delete_draft')): ?>
             columns.push({
                 data: null,
                 orderable: false,
@@ -67,21 +67,32 @@
                 render: function(row) {
 
                     if (row.status === 'final') {
-                        return `<button class="btn btn-sm btn-info btn-detail" data-id="${row.id}">
-                    Detail
-                </button>`;
+                        return `
+                    <button class="btn btn-sm btn-info btn-detail" data-id="${row.id}">
+                        Detail
+                    </button>
+                `;
                     }
 
+                    let buttons = '';
+
                     <?php if (can('stok_edit')): ?>
-                        return `
-                            <button class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">
-                                Edit
-                            </button>
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="${row.id}">
-                                Hapus
-                            </button>
-                        `;
+                        buttons += `
+                    <button class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">
+                        Edit
+                    </button>
+                `;
                     <?php endif; ?>
+
+                    <?php if (can('stok_delete_draft')): ?>
+                        buttons += `
+                    <button class="btn btn-sm btn-danger btn-delete" data-id="${row.id}">
+                        Hapus
+                    </button>
+                `;
+                    <?php endif; ?>
+
+                    return buttons || '-';
                 }
             });
         <?php endif; ?>
