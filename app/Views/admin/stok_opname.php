@@ -5,7 +5,7 @@
 <div class="card shadow-sm" style="border-radius: 3px;">
     <div class="card-body">
         <ul class="nav nav-tabs nav-tabs-custom nav-justified">
-            <?php if (can('stok_view')): ?>    
+            <?php if (can('stok_view')): ?>
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab-data">
                         Data Opname
@@ -41,7 +41,7 @@
                     </table>
                 </div>
             </div>
-            
+
             <?php if (can('stok_create')): ?>
                 <div class="tab-pane" id="tab-form">
                     <form id="form-opname">
@@ -54,8 +54,8 @@
                                 <input type="date" id="tanggal" class="form-control" required>
                             </div>
                             <div class="col-md-8">
-                                <label>Keterangan</label>
-                                <input type="text" id="keterangan" class="form-control" placeholder="Stok opname bulanan">
+                                <label>Nama Barang</label>
+                                <input type="text" id="keterangan" class="form-control" placeholder="Masukkan nama barang">
                             </div>
                         </div>
 
@@ -117,50 +117,50 @@
 
 
 <div class="modal fade" id="modal-detail" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title">Detail Stok Opname</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-
-        <div class="mb-3">
-            <div class="d-flex">
-                <div style="width:150px;"><b>Tanggal</b></div>
-                <div style="width:10px;">:</div>
-                <div><span id="detail-tanggal"></span></div>
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Stok Opname</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
-            <div class="d-flex">
-                <div style="width:150px;"><b>Keterangan</b></div>
-                <div style="width:10px;">:</div>
-                <div><span id="detail-keterangan"></span></div>
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <div class="d-flex">
+                        <div style="width:150px;"><b>Tanggal</b></div>
+                        <div style="width:10px;">:</div>
+                        <div><span id="detail-tanggal"></span></div>
+                    </div>
+
+                    <div class="d-flex">
+                        <div style="width:150px;"><b>Keterangan</b></div>
+                        <div style="width:10px;">:</div>
+                        <div><span id="detail-keterangan"></span></div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Kode</th>
+                                <th>Nama</th>
+                                <th>Stok Sistem</th>
+                                <th>Stok Fisik</th>
+                                <th>Selisih</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-table"></tbody>
+                    </table>
+                </div>
+
             </div>
+
         </div>
-
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Kode</th>
-                        <th>Nama</th>
-                        <th>Stok Sistem</th>
-                        <th>Stok Fisik</th>
-                        <th>Selisih</th>
-                        <th>Keterangan</th>
-                    </tr>
-                </thead>
-                <tbody id="detail-table"></tbody>
-            </table>
-        </div>
-
-      </div>
-
     </div>
-  </div>
 </div>
 
 <?= $this->endSection() ?>

@@ -11,7 +11,7 @@ class StokOpnameModel extends Model
 
     protected $allowedFields = [
         'tanggal',
-        'keterangan',
+        'nama_barang',
         'status',
         'created_at',
         'created_by'

@@ -124,6 +124,8 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
         $routes->post('opname/save', 'StokOpnameController::save', [
             'filter' => 'permission:stok_create'
         ]);
+
+        $routes->post('opname/delete/(:num)', 'StokOpnameController::delete/$1');
     });
 
     $routes->group('stok-masuk', [

@@ -73,7 +73,14 @@
                     }
 
                     <?php if (can('stok_edit')): ?>
-                        return `<button class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">Edit</button>`;
+                        return `
+                            <button class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger btn-delete" data-id="${row.id}">
+                                Hapus
+                            </button>
+                        `;
                     <?php endif; ?>
                 }
             });
@@ -332,7 +339,7 @@
             data: JSON.stringify({
                 id: $('#id').val(),
                 tanggal: $('#tanggal').val(),
-                keterangan: $('#keterangan').val(),
+                nama_barang: $('#nama_barang').val(),
                 status,
                 items
             }),
@@ -362,6 +369,33 @@
             showCancelButton: true
         }).then(res => {
             if (res.isConfirmed) saveOpname('final');
+        });
+    });
+
+
+    $(document).on('click', '.btn-delete', function() {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Yakin?',
+            text: 'Draft stok opname akan dihapus',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            $.ajax({
+                url: BASE_URL + '/delete/' + id,
+                method: 'POST',
+                success: function(res) {
+                    Swal.fire('Success', res.message, 'success');
+                    table.ajax.reload(null, false);
+                },
+                error: function() {
+                    Swal.fire('Error', 'Gagal menghapus data', 'error');
+                }
+            });
         });
     });
 </script>

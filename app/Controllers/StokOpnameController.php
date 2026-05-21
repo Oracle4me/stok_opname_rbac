@@ -99,7 +99,7 @@ class StokOpnameController extends BaseController
         $totalFiltered = $builder->countAllResults(false);
 
         $builder->orderBy($orderColumn, $orderDir)
-                ->limit($length, $start);
+            ->limit($length, $start);
 
         $data = $builder->get()->getResultArray();
 
@@ -146,7 +146,7 @@ class StokOpnameController extends BaseController
 
         $id         = $json['id'] ?? null;
         $tanggal    = $json['tanggal'] ?? null;
-        $keterangan = $json['keterangan'] ?? null;
+        $nama_barang = $json['nama_barang'] ?? null;
         $status     = $json['status'] ?? 'draft';
         $items      = $json['items'] ?? [];
 
@@ -182,7 +182,7 @@ class StokOpnameController extends BaseController
 
         $header = [
             'tanggal'    => $tanggal,
-            'keterangan' => $keterangan,
+            'nama_barang' => $nama_barang,
             'status'     => $status
         ];
 
@@ -280,7 +280,6 @@ class StokOpnameController extends BaseController
                             ->set('qty', 'qty + ' . $selisih, false)
                             ->update();
                     }
-
                 } else {
 
                     $this->db->table('stok_barang')->insert([
@@ -317,6 +316,40 @@ class StokOpnameController extends BaseController
             'message' => $status === 'final'
                 ? 'Opname berhasil difinalisasi & stok diperbarui'
                 : 'Draft berhasil disimpan'
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $data = $this->opnameModel->find($id);
+
+        if (!$data) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+
+        if ($data['status'] !== 'draft') {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Hanya draft yang boleh dihapus'
+            ]);
+        }
+
+        $this->db->transStart();
+
+        $this->detailModel
+            ->where('stok_opname_id', $id)
+            ->delete();
+
+        $this->opnameModel->delete($id);
+
+        $this->db->transComplete();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Draft berhasil dihapus'
         ]);
     }
 }
