@@ -148,7 +148,7 @@
         let email = decodeURIComponent($(this).data('email'));
         let role_id = $(this).data('role');
         let status = $(this).data('status');
-        
+
         $('#formTitle').text($('#formTitle').data('edit'));
         $('#id').val(id);
         $('#username').val(username);
@@ -224,5 +224,4 @@
         $('#password').attr('required', true);
         $('#select_role').empty().val(null).trigger('change');
     })
-
 </script>

@@ -136,9 +136,14 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
         $routes->get('data', 'StokMasukController::getData');
         $routes->get('data-barang', 'StokMasukController::getBarang');
 
+        $routes->get('detail/(:num)', 'StokMasukController::detail/$1');
+
         $routes->post('save', 'StokMasukController::save', [
             'filter' => 'permission:stok_masuk_create'
         ]);
+
+        $routes->post('update/(:num)', 'StokMasukController::update/$1');
+        $routes->post('delete/(:num)', 'StokMasukController::delete/$1');
     });
 
     $routes->group('distribusi', [

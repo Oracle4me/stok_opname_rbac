@@ -30,9 +30,10 @@
                             <tr>
                                 <th>Tanggal</th>
                                 <th>Barang</th>
+                                <th class="text-center">Status</th>
                                 <th class="text-center">Qty</th>
                                 <th>Keterangan</th>
-                                <th>User</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,6 +50,7 @@
             <?php if (can('stok_masuk_create')): ?>
                 <div class="tab-pane" id="tab-form">
                     <form id="form">
+                        <input type="hidden" class="form-control" id="id" name="id" required>
                         <?= csrf_field(); ?>
                         <div class="row mb-3">
                             <div class="col-md-4">

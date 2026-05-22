@@ -34,6 +34,16 @@
                     data: 'nama'
                 },
                 {
+                    data: 'tipe',
+                    defaultContent: '-',
+                    className: "text-center",
+                    render: function(data) {
+                        if (!data) return "-"
+                        console.log("dadadad", data)
+                        return `<span class="badge bg-success">Masuk</span>`;
+                    }
+                },
+                {
                     data: 'qty',
                     className: 'text-center'
                 },
@@ -42,8 +52,23 @@
                     defaultContent: '-'
                 },
                 {
-                    data: 'user',
-                    defaultContent: '-'
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center',
+                    render: function(row) {
+                        return `
+                        <button class="btn btn-sm btn-info btn-detail" data-id="${row.id}">
+                            Detail
+                        </button>
+                        <button class="btn btn-sm btn-warning btn-edit" data-id="${row.id}">
+                            Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger btn-delete" data-id="${row.id}">
+                            Hapus
+                        </button>
+                    `;
+                    }
                 }
             ]
         });
@@ -80,6 +105,7 @@
 
     $('#form').submit(function(e) {
         e.preventDefault();
+        let id = $('#id').val();
 
         Swal.fire({
             title: 'Loading...',
@@ -99,9 +125,12 @@
             Swal.fire('Error', 'Pilih barang dulu', 'error');
             return;
         }
+        let url = id ?
+            BASE_URL + '/update/' + id :
+            BASE_URL + '/save';
 
         $.ajax({
-            url: BASE_URL + '/save',
+            url: url,
             method: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
@@ -133,6 +162,99 @@
                 Swal.close();
                 Swal.fire('Error', 'Terjadi kesalahan', 'error');
             }
+        });
+    });
+
+    // Fungsi Detail
+    $(document).on('click', '.btn-detail', function() {
+        let id = $(this).data('id');
+
+        $.get(BASE_URL + '/detail/' + id, function(res) {
+            Swal.fire({
+                title: 'Detail Stok Masuk',
+                width: 650,
+                html: `
+                <div class="text-left">
+
+                    <div class="mb-3 p-2 border rounded bg-light">
+                        <small class="text-muted">Dibuat oleh</small>
+                        <h5 class="mb-0 text-primary gap-2">
+                            <i class="fas fa-user mr-1"></i>
+                            ${res.user ?? '-'}
+                        </h5>
+                    </div>
+
+                    <table class="table table-bordered table-sm mb-0 text-start">
+                        <tr>
+                            <th width="35%" class="text-start">Kode Barang</th>
+                            <td>${res.code ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <th >Nama Barang</th>
+                            <td>${res.nama ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <th>Status</th>
+                            <td>
+                                <span class="badge bg-success">
+                                    Masuk
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Qty Masuk</th>
+                            <td>${res.qty ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <th>Tanggal Transaksi</th>
+                            <td>${res.created_at ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <th>Keterangan</th>
+                            <td>${res.keterangan ?? '-'}</td>
+                        </tr>
+                    </table>
+
+                </div>
+            `,
+                confirmButtonText: 'Tutup'
+            });
+        });
+    });
+
+    $(document).on('click', '.btn-edit', function() {
+        let id = $(this).data('id');
+
+        $.get(BASE_URL + '/detail/' + id, function(res) {
+            $('#id').val(res.id);
+            $('#barang_id').val(res.barang_id).trigger('change');
+            $('#qty').val(Math.abs(res.selisih));
+            $('#keterangan').val(res.keterangan);
+
+            $('a[href="#tab-form"]').tab('show');
+        });
+    });
+
+    $(document).on('click', '.btn-delete', function() {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Hapus data?',
+            text: 'Stok akan dikembalikan seperti semula',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus'
+        }).then((result) => {
+            if (!result.isConfirmed) return;
+
+            $.post(BASE_URL + '/delete/' + id, function(res) {
+                if (res.status === 'success') {
+                    Swal.fire('Success', res.message, 'success');
+                    table.ajax.reload(null, false);
+                } else {
+                    Swal.fire('Error', res.message, 'error');
+                }
+            });
         });
     });
 

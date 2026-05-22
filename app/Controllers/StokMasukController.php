@@ -50,15 +50,16 @@ class StokMasukController extends BaseController
     {
         $data = $this->db->table('mutasi_stok m')
             ->select('
-                m.created_at as tanggal,
-                b.nama,
-                ABS(m.selisih) as qty,
-                m.keterangan,
-                u.nama as user
-            ')
+            m.id,
+            m.created_at as tanggal,
+            b.nama,
+            ABS(m.selisih) as qty,
+            m.keterangan,
+            m.tipe,
+        ')
             ->join('barang b', 'b.id = m.barang_id')
             ->join('users u', 'u.id = m.created_by', 'left')
-            ->where('m.tipe', 'masuk')
+            ->whereIn('m.tipe', ['masuk'])
             ->orderBy('m.id', 'DESC')
             ->get()
             ->getResultArray();
@@ -67,6 +68,7 @@ class StokMasukController extends BaseController
             'data' => $data
         ]);
     }
+
     public function save()
     {
         $json = $this->request->getJSON(true) ?? $this->request->getPost();
@@ -147,6 +149,140 @@ class StokMasukController extends BaseController
         return $this->response->setJSON([
             'status' => 'success',
             'message' => 'Stok berhasil ditambahkan'
+        ]);
+    }
+
+
+    public function detail($id)
+    {
+        $data = $this->db->table('mutasi_stok m')
+            ->select('
+            m.*,
+            b.nama,
+            b.code,
+            ABS(m.selisih) as qty,
+            u.nama as user
+        ')
+            ->join('barang b', 'b.id = m.barang_id')
+            ->join('users u', 'u.id = m.created_by', 'left')
+            ->where('m.id', $id)
+            ->get()
+            ->getRowArray();
+
+        if (!$data) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    public function update($id)
+    {
+        $trx = $this->mutasiModel->find($id);
+
+        if (!$trx || $trx['tipe'] !== 'masuk') {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Data tidak valid'
+            ]);
+        }
+
+        $json = $this->request->getJSON(true) ?? $this->request->getPost();
+
+        $qtyBaru = (int)($json['qty'] ?? 0);
+        $keterangan = $json['keterangan'] ?? null;
+
+        if ($qtyBaru <= 0) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Qty wajib diisi'
+            ]);
+        }
+
+        $qtyLama = (int)$trx['selisih'];
+        $selisih = $qtyBaru - $qtyLama;
+
+        $this->db->transStart();
+
+        $stok = $this->stokBarangModel
+            ->where('barang_id', $trx['barang_id'])
+            ->first();
+
+        $stokBaru = (int)$stok['qty'] + $selisih;
+
+        if ($stokBaru < 0) {
+            $this->db->transRollback();
+
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Stok tidak valid'
+            ]);
+        }
+
+        $this->stokBarangModel
+            ->where('barang_id', $trx['barang_id'])
+            ->update(null, [
+                'qty' => $stokBaru
+            ]);
+
+        $this->mutasiModel->update($id, [
+            'selisih' => $qtyBaru,
+            'qty_after' => $stokBaru,
+            'keterangan' => $keterangan
+        ]);
+
+        $this->db->transComplete();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Data berhasil diupdate'
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $trx = $this->mutasiModel->find($id);
+
+        if (!$trx || $trx['tipe'] !== 'masuk') {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Data tidak valid'
+            ]);
+        }
+
+        $this->db->transStart();
+
+        $stok = $this->stokBarangModel
+            ->where('barang_id', $trx['barang_id'])
+            ->first();
+
+        $stokBaru = (int)$stok['qty'] - (int)$trx['selisih'];
+
+        if ($stokBaru < 0) {
+            $this->db->transRollback();
+
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Stok tidak cukup untuk rollback'
+            ]);
+        }
+
+        $this->stokBarangModel
+            ->where('barang_id', $trx['barang_id'])
+            ->update(null, [
+                'qty' => $stokBaru
+            ]);
+
+        $this->mutasiModel->delete($id);
+
+        $this->db->transComplete();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus'
         ]);
     }
 }
