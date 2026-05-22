@@ -26,15 +26,15 @@
             <?php if (can('distribusi_barang_view')): ?>
                 <div class="tab-pane <?= can('distribusi_barang_view') ? 'active' : '' ?>" id="tab-data">
                     <div class="table-responsive">
-                        <table id="datatable" class="table table-theme nowrap w-100" >
+                        <table id="datatable" class="table table-theme nowrap w-100">
                             <thead>
                                 <tr>
                                     <th>Tanggal</th>
                                     <th>Barang</th>
                                     <th class="text-center">Qty</th>
-                                    <th>Team</th>
+                                    <th>Keterangan</th>
                                     <th>Area</th>
-                                    <th>User</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -47,6 +47,8 @@
                 <div class="tab-pane <?= !can('distribusi_barang_view') ? 'active' : '' ?>" id="tab-form">
                     <div class="card-body">
                         <form id="form">
+                            <input type="hidden" class="form-control" id="id" name="id" required>
+                            <?= csrf_field(); ?>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">

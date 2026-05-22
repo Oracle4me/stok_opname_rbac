@@ -38,7 +38,7 @@
                 data: 'tanggal'
             },
             {
-                data: 'keterangan',
+                data: 'nama_barang',
                 defaultContent: '-'
             },
 
@@ -266,7 +266,7 @@
 
             $('#id').val(res.header.id);
             $('#tanggal').val(res.header.tanggal);
-            $('#keterangan').val(res.header.keterangan);
+            $('#nama_barang').val(res.header.nama_barang);
 
             $('.nav-link[href="#tab-form"]').tab('show');
 

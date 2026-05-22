@@ -142,8 +142,12 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
             'filter' => 'permission:stok_masuk_create'
         ]);
 
-        $routes->post('update/(:num)', 'StokMasukController::update/$1');
-        $routes->post('delete/(:num)', 'StokMasukController::delete/$1');
+        $routes->post('update/(:num)', 'StokMasukController::update/$1', [
+            'filter' => 'permission:stok_masuk_edit'
+        ]);
+        $routes->post('delete/(:num)', 'StokMasukController::delete/$1', [
+            'filter' => 'permission:stok_delete'
+        ]);
     });
 
     $routes->group('distribusi', [
@@ -153,8 +157,17 @@ $routes->group('admin', ['filter' => 'auth'], function ($routes) {
         $routes->get('/', 'DistribusiBarangController::index');
         $routes->get('data', 'DistribusiBarangController::getData');
 
+        $routes->get('detail/(:num)', 'DistribusiBarangController::detail/$1');
+
         $routes->post('save', 'DistribusiBarangController::save', [
             'filter' => 'permission:distribusi_barang_create'
+        ]);
+
+        $routes->post('update/(:num)', 'DistribusiBarangController::update/$1', [
+            'filter' => 'permission:distribusi_barang_edit'
+        ]);
+        $routes->post('delete/(:num)', 'DistribusiBarangController::delete/$1', [
+            'filter' => 'permission:distribusi_barang_delete'
         ]);
     });
 

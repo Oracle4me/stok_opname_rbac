@@ -29,7 +29,7 @@
                         <thead>
                             <tr>
                                 <th>Tanggal</th>
-                                <th>Keterangan</th>
+                                <th>Nama Barang</th>
                                 <th class="text-center">Status</th>
                                 <th>User</th>
                                 <?php if (can('stok_edit') || can('stok_final')): ?>
@@ -55,7 +55,7 @@
                             </div>
                             <div class="col-md-8">
                                 <label>Nama Barang</label>
-                                <input type="text" id="keterangan" class="form-control" placeholder="Masukkan nama barang">
+                                <input type="text" id="nama_barang" class="form-control" placeholder="Masukkan nama barang">
                             </div>
                         </div>
 

@@ -98,20 +98,34 @@ class LaporanController extends BaseController
 
         $data = $this->db->table('mutasi_stok m')
             ->select('
-                m.*,
-                b.code,
-                b.nama,
-                u.nama as user
-            ')
+            m.*,
+            b.code,
+            b.nama,
+            u.nama as user,
+            CASE
+                WHEN m.tipe = "opname" THEN sod.keterangan
+                ELSE m.keterangan 
+            END as keterangan_display
+        ', false)
             ->join('barang b', 'b.id = m.barang_id')
             ->join('users u', 'u.id = m.created_by', 'left')
+
+            ->join(
+                'stok_opname_detail sod',
+                'sod.stok_opname_id = m.referensi_id
+                AND sod.barang_id = m.barang_id',
+                'left'
+            )
+
             ->where("DATE(m.created_at) >=", $start)
             ->where("DATE(m.created_at) <=", $end)
             ->orderBy('m.created_at', 'DESC')
             ->get()
             ->getResultArray();
 
-        return $this->response->setJSON(['data' => $data]);
+        return $this->response->setJSON([
+            'data' => $data
+        ]);
     }
 
     public function exportRekap()

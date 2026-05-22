@@ -40,11 +40,17 @@ return [
     'Stok Masuk' => [
         ['nama' => 'stok_masuk_view', 'label' => 'Lihat Stok Masuk'],
         ['nama' => 'stok_masuk_create', 'label' => 'Tambah Stok Masuk'],
+        ['nama' => 'stok_masuk_detail', 'label' => 'Detail Stok Masuk'],
+        ['nama' => 'stok_masuk_edit', 'label' => 'Edit Stok Masuk'],
+        ['nama' => 'stok_masuk_delete', 'label' => 'Hapus Stok Masuk'],
     ],
 
     'Distribusi Barang' => [
         ['nama' => 'distribusi_barang_view', 'label' => 'Lihat Distribusi Barang'],
         ['nama' => 'distribusi_barang_create', 'label' => 'Tambah Distribusi Barang'],
+        ['nama' => 'distribusi_barang_detail', 'label' => 'Detail Distribusi Barang'],
+        ['nama' => 'distribusi_barang_edit', 'label' => 'Edit Distribusi Barang'],
+        ['nama' => 'distribusi_barang_delete', 'label' => 'Hapus Distribusi Barang'],
     ],
 
     'Laporan' => [

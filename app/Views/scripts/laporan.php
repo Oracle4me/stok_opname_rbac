@@ -123,6 +123,10 @@
                     }
                 },
                 {
+                    data: 'keterangan_display',
+                    defaultContent: '-',
+                },
+                {
                     data: 'qty_before',
                     className: 'text-center'
                 },

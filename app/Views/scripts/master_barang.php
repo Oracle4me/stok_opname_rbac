@@ -1,8 +1,8 @@
 <script>
     const BASE_URL = "<?= base_url('admin/barang') ?>";
-    
+
     let table;
-    
+
     $(document).ready(function() {
         setToday();
         let columns = [{
@@ -43,7 +43,7 @@
                     let btn = '';
 
                     <?php if (can('barang_edit')): ?>
-                        btn += `<button class="btn btn-sm btn-success me-1"
+                        btn += `<button class="btn btn-sm btn-warning me-1"
                 onclick="editData(${row.id})">
                 <i class="bx bx-pencil"></i>
             </button>`;
@@ -238,7 +238,7 @@
     }
 
     $('#btn_reset').on('click', function() {
-        
+
         $('#form')[0].reset();
         $('#formTitle').text($('#formTitle').data('add'));
 

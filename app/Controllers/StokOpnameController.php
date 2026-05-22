@@ -78,7 +78,7 @@ class StokOpnameController extends BaseController
 
         $columns = [
             'stok_opname.tanggal',
-            'stok_opname.keterangan',
+            'stok_opname.nama_barang',
             'stok_opname.status',
             'users.nama'
         ];

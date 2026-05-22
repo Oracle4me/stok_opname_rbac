@@ -79,6 +79,7 @@
                                 <th>Tanggal</th>
                                 <th>Barang</th>
                                 <th class="text-center">Tipe</th>
+                                <th class="text-center">Keterangan</th>
                                 <th class="text-center">Stok Sebelum</th>
                                 <th class="text-center">Selisih</th>
                                 <th class="text-center">Stok Sesudah</th>

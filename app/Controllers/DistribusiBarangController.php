@@ -27,11 +27,13 @@ class DistribusiBarangController extends BaseController
     {
         $data = $this->db->table('distribusi_barang d')
             ->select('
+                d.id,
                 d.tanggal,
                 b.nama,
                 d.qty,
                 d.team_leader,
                 d.area,
+                d.note,
                 u.nama as user
             ')
             ->join('barang b', 'b.id = d.barang_id')
@@ -146,6 +148,157 @@ class DistribusiBarangController extends BaseController
         return $this->response->setJSON([
             'status' => 'success',
             'message' => 'Distribusi berhasil'
+        ]);
+    }
+
+    public function detail($id)
+    {
+        $data = $this->db->table('distribusi_barang d')
+            ->select('
+            d.*,
+            b.code,
+            b.nama,
+            u.nama as user
+        ')
+            ->join('barang b', 'b.id = d.barang_id')
+            ->join('users u', 'u.id = d.created_by', 'left')
+            ->where('d.id', $id)
+            ->get()
+            ->getRowArray();
+
+        if (!$data) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    public function update($id)
+    {
+        $trx = $this->db->table('distribusi_barang')
+            ->where('id', $id)
+            ->get()
+            ->getRowArray();
+
+        if (!$trx) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+
+        $json = $this->request->getJSON(true) ?? $this->request->getPost();
+
+        $qtyBaru = (int)$json['qty'];
+        $teamLeader = trim($json['team_leader']);
+        $area = trim($json['area']);
+        $note = trim($json['note']);
+
+        if ($qtyBaru <= 0) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Qty tidak valid'
+            ]);
+        }
+
+        $qtyLama = (int)$trx['qty'];
+        $selisih = $qtyBaru - $qtyLama;
+
+        $this->db->transStart();
+
+        $stok = $this->stokModel
+            ->where('barang_id', $trx['barang_id'])
+            ->first();
+
+        $stokBaru = (int)$stok['qty'] - $selisih;
+
+        if ($stokBaru < 0) {
+            $this->db->transRollback();
+
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Stok tidak cukup'
+            ]);
+        }
+
+        $this->stokModel
+            ->where('barang_id', $trx['barang_id'])
+            ->update(null, [
+                'qty' => $stokBaru
+            ]);
+
+        $this->db->table('distribusi_barang')
+            ->where('id', $id)
+            ->update([
+                'qty' => $qtyBaru,
+                'team_leader' => $teamLeader,
+                'area' => $area,
+                'note' => $note
+            ]);
+
+        $this->mutasiModel
+            ->where('referensi_id', $id)
+            ->where('referensi_tipe', 'distribusi')
+            ->set([
+                'selisih' => -$qtyBaru,
+                'qty_after' => $stokBaru,
+                'keterangan' => "Distribusi ke {$teamLeader}" . ($area ? " - {$area}" : '')
+            ])
+            ->update();
+
+        $this->db->transComplete();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Distribusi berhasil diupdate'
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $trx = $this->db->table('distribusi_barang')
+            ->where('id', $id)
+            ->get()
+            ->getRowArray();
+
+        if (!$trx) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+
+        $this->db->transStart();
+
+        $stok = $this->stokModel
+            ->where('barang_id', $trx['barang_id'])
+            ->first();
+
+        $stokBaru = (int)$stok['qty'] + (int)$trx['qty'];
+
+        $this->stokModel
+            ->where('barang_id', $trx['barang_id'])
+            ->update(null, [
+                'qty' => $stokBaru
+            ]);
+
+        $this->mutasiModel
+            ->where('referensi_id', $id)
+            ->where('referensi_tipe', 'distribusi')
+            ->delete();
+
+        $this->db->table('distribusi_barang')
+            ->where('id', $id)
+            ->delete();
+
+        $this->db->transComplete();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Distribusi berhasil dihapus'
         ]);
     }
 }

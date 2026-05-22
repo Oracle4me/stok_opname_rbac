@@ -57,17 +57,33 @@
                     searchable: false,
                     className: 'text-center',
                     render: function(row) {
-                        return `
-                        <button class="btn btn-sm btn-info btn-detail" data-id="${row.id}">
-                            Detail
-                        </button>
-                        <button class="btn btn-sm btn-warning btn-edit" data-id="${row.id}">
-                            Edit
-                        </button>
-                        <button class="btn btn-sm btn-danger btn-delete" data-id="${row.id}">
-                            Hapus
-                        </button>
-                    `;
+                        let buttons = '';
+
+                        <?php if (can('sttok_masuk_detail')): ?>
+                            buttons += `
+                                <button class="btn btn-sm btn-info btn-detail" data-id="${row.id}" title="Detail">
+                                    <i class="bx bx-show"></i>
+                                </button>
+                            `;
+                        <?php endif; ?>
+
+                        <?php if (can('stok_masuk_edit')): ?>
+                            buttons += `
+                            <button class="btn btn-sm btn-warning btn-edit" data-id="${row.id}" title="Edit">
+                                <i class="bx bx-pencil"></i>
+                            </button>
+                        `;
+                        <?php endif; ?>
+
+                        <?php if (can('stok_masuk_delete')): ?>
+                            buttons += `
+                            <button class="btn btn-sm btn-danger btn-delete" data-id="${row.id}" title="Hapus">
+                                <i class="bx bx-trash"></i>
+                            </button>
+                        `;
+                        <?php endif; ?>
+
+                        return buttons || '-';
                     }
                 }
             ]
